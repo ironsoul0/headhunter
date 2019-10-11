@@ -21,7 +21,7 @@ router.get("/register", async (req, res) => {
       success: false,
       message: error.details[0].message,
     });
-  if (req.body.email.split("@") !== "nu.edu.kz") {
+  if (req.body.email.split("@")[1] !== "nu.edu.kz") {
     return res.status(400).send({
       success: false,
       message: "Use NU email",
