@@ -1,28 +1,35 @@
-const express = require("express");
 const dotenv = require("dotenv");
-const TelegramBot = require("node-telegram-bot-api");
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
+dotenv.config();
 
 const routes = require("./routes");
-const commands = require("./commands");
+const bot = require("./bot");
 
 const bootstrap = async () => {
-  dotenv.config();
-
   const app = express();
-  const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
-
-  commands.forEach(commandHandler => {
-    commandHandler(bot);
-  });
 
   app.use((req, _, next) => {
     req.bot = bot;
     next();
   });
 
+  app.use(bodyParser.json());
+
   routes.forEach(route => {
     app.use(route.path, route.router);
   });
+
+  mongoose
+    .connect(process.env.DB_CONNECT, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => {
+      console.log("Connected to Mongo");
+    });
 
   const PORT = process.env.PORT || 3000;
 

@@ -1,5 +1,6 @@
 const express = require("express");
 const uuid = require("uuidv4").default;
+
 const User = require("../models/User");
 const validateRegistration = require("../validators/registration");
 const students = require("../data/students.json");
@@ -28,7 +29,10 @@ router.get("/register", async (req, res) => {
     });
   }
   const student = students[req.body.pid];
-  if (!req.body.email.includes(student.name.split(" ")[1].toLowerCase()))
+  if (
+    !student ||
+    !req.body.email.includes(student.name.split(" ")[1].toLowerCase())
+  )
     return res.status(400).send({
       success: false,
       message: "Wrong ID or email",
@@ -41,7 +45,7 @@ router.get("/register", async (req, res) => {
   if (userExists)
     return res.status(400).send({
       success: false,
-      message: "Wrong ID or email",
+      message: "Already exists",
     });
 
   const token = uuid();
@@ -54,8 +58,16 @@ router.get("/register", async (req, res) => {
   });
 
   sendEmail(
-    `<html><body><h1>You have successfully registred</h1><p>Here is your token: <b>${token}</b></p><p>Use it to login into our <a href="https://t.me/bot">telegram bot</a></p></body></html>`,
-    "Headhunter instructions",
+    `
+      <html>
+        <body>
+          <h1>You have successfully registered</h1>
+          <p>Here is your token: <b>${token}</b></p>
+          <p>Use it to login into our <a href="https://t.me/bot">Telegram bot</a></p>
+        </body>
+      </html>
+    `,
+    "Headhunter Instructions",
     req.body.email
   );
 

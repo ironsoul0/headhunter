@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema({
     max: 255,
   },
   kills: {
-    type: Date,
+    type: Number,
     default: 0,
   },
   target: {
