@@ -1,3 +1,3 @@
-const echo = require("./echo");
+const start = require("./start");
 
-module.exports = [echo];
+module.exports = [start];

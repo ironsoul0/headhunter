@@ -9,7 +9,7 @@ const sendEmail = require("../utils/mailer");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  req.bot.sendMessage(317786640, "Hi there!");
+  req.bot.telegram.sendMessage(317786640, "Hi there!");
   res.json({
     message: "Message was sent",
   });
