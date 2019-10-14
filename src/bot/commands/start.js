@@ -1,6 +1,22 @@
+const Markup = require("telegraf/markup");
+
+const response = [
+  "Hi there!",
+  "Wanna try yourself being a hunter? Use the keyboard to become one! 😈",
+  "Witch-ing you a spook-tacular Halloween! 🎃",
+].join("\n\n");
+
 module.exports = bot => {
-  bot.start(ctx => ctx.reply("Welcome"));
-  bot.help(ctx => ctx.reply("Send me a sticker"));
-  bot.on("sticker", ctx => ctx.reply("👍"));
-  bot.hears("hi", ctx => ctx.reply("Hey there"));
+  bot.start(({ reply }) => {
+    return reply(
+      response,
+      Markup.keyboard([
+        ["🦍 Become a Hunter", "🔥 TOP Hunters"],
+        ["👁 Game Status", "👹 Catch the Aim"],
+        ["📢 Personal Info", "📞 Feedback"],
+      ])
+        .resize()
+        .extra()
+    );
+  });
 };
