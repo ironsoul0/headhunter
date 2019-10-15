@@ -33,6 +33,10 @@ const userSchema = mongoose.Schema({
   chatId: {
     type: Number,
   },
+  lastKill: {
+    type: Date,
+    default: new Date(),
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

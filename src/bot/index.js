@@ -11,6 +11,8 @@ const { leave } = Stage;
 const stage = new Stage(scenes);
 stage.command("cancel", leave());
 
+bot.context.gameStarted = false; /* Should be set to false at 12:00 AM */
+
 bot.use(session());
 bot.use(stage.middleware());
 

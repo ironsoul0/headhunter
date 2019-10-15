@@ -1,10 +1,8 @@
 const Extra = require("telegraf/extra");
 
-const deadlinePassed = false; // TBA
-
 module.exports = bot => {
   bot.hears("🦍 Become a Hunter", ctx => {
-    if (deadlinePassed) {
+    if (ctx.gameStarted) {
       ctx.reply("Registration is closed now 😭");
     } else {
       ctx.reply(
