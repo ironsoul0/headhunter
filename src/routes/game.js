@@ -1,7 +1,7 @@
 const express = require("express");
 const uuid = require("uuidv4").default;
 
-const User = require("../models/User");
+const User = require("../models/user");
 const validateRegistration = require("../validators/registration");
 const students = require("../data/students.json");
 const sendEmail = require("../utils/mailer");
