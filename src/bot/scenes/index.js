@@ -1,3 +1,4 @@
 const askToken = require("./askToken");
+const askSecret = require("./askSecret");
 
-module.exports = [askToken];
+module.exports = [askToken, askSecret];

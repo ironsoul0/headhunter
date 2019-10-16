@@ -4,13 +4,15 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../models/admin");
 const validateAdmin = require("../validators/admin");
 const Setting = require("../models/setting");
+const verify = require("../utils/verify");
+const User = require("../models/user");
 
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
   const { error } = validateAdmin(req.body);
   if (error)
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: error.details[0].message,
     });
@@ -20,7 +22,7 @@ router.post("/register", async (req, res) => {
   });
 
   if (!isDisabled) {
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "Admin registration is disabled",
     });
@@ -31,7 +33,7 @@ router.post("/register", async (req, res) => {
   });
 
   if (adminExists)
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "Admin with this login exists",
     });
@@ -48,7 +50,7 @@ router.post("/register", async (req, res) => {
     const savedAdmin = await admin.save();
     return res.send(savedAdmin);
   } catch (err) {
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "DB Error",
     });
@@ -58,7 +60,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { error } = validateAdmin(req.body);
   if (error)
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: error.details[0].message,
     });
@@ -66,13 +68,13 @@ router.post("/login", async (req, res) => {
     login: req.body.login,
   });
   if (!admin)
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "Wrong login",
     });
   const validPass = await bcrypt.compare(req.body.password, admin.password);
   if (!validPass)
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "Wrong password",
     });
@@ -90,10 +92,44 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Panel route was reached",
+router.get("/users/all", verify, async (req, res) => {
+  const query = req.query.active
+    ? {
+        active: true,
+      }
+    : {};
+  const users = await User.find(query);
+  res.send({
+    success: true,
+    users,
   });
+});
+
+router.get("/users/shuffle", verify, async (req, res) => {
+  try {
+    const users = await User.find({
+      active: true,
+    });
+
+    for (let i = users.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [users[i], users[j]] = [users[j], users[i]];
+    }
+
+    users.forEach(async (user, i) => {
+      // eslint-disable-next-line no-underscore-dangle
+      users[i].target = users[i < users.length - 1 ? i + 1 : 0]._id;
+      await users[i].save();
+    });
+    return res.send({
+      success: true,
+      users,
+    });
+  } catch (err) {
+    return res.send({
+      success: false,
+    });
+  }
 });
 
 module.exports = router;

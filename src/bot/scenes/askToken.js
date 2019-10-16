@@ -1,5 +1,5 @@
 const Scene = require("telegraf/scenes/base");
-const User = require("../../models/User");
+const User = require("../../models/user");
 
 const askToken = new Scene("askToken");
 

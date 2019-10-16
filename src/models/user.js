@@ -26,6 +26,10 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  killed: {
+    type: Boolean,
+    default: false,
+  },
   token: {
     type: String,
     required: true,
