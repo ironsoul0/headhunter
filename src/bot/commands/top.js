@@ -12,7 +12,7 @@ const convert = value => {
 
 module.exports = bot => {
   bot.hears("🔥 TOP Hunters", async ctx => {
-    if (ctx.gameStarted) {
+    if (!ctx.gameStarted) {
       return ctx.reply(gameNotStarted);
     }
     const users = await User.find();

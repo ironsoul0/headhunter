@@ -8,22 +8,15 @@ const sendEmail = require("../utils/mailer");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  req.bot.telegram.sendMessage(317786640, "Hi there!");
-  res.json({
-    message: "Message was sent",
-  });
-});
-
-router.get("/register", async (req, res) => {
+router.post("/register", async (req, res) => {
   const { error } = validateRegistration(req.body);
   if (error)
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: error.details[0].message,
     });
   if (req.body.email.split("@")[1] !== "nu.edu.kz") {
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "Use NU email",
     });
@@ -33,7 +26,7 @@ router.get("/register", async (req, res) => {
     !student ||
     !req.body.email.includes(student.name.split(" ")[1].toLowerCase())
   )
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "Wrong ID or email",
     });
@@ -43,7 +36,7 @@ router.get("/register", async (req, res) => {
   });
 
   if (userExists)
-    return res.status(400).send({
+    return res.send({
       success: false,
       message: "Already exists",
     });

@@ -12,6 +12,7 @@ askSecret.on("message", async ctx => {
   await ctx.reply("One second, sir..");
 
   const secret = ctx.update.message.text;
+
   const user = await User.findOne({
     chatId: ctx.update.message.from.id,
   });
@@ -43,6 +44,8 @@ askSecret.on("message", async ctx => {
     );
     await target.save();
     await user.save();
+  } else {
+    await ctx.reply("Wrong secret phrase");
   }
 
   ctx.scene.leave();

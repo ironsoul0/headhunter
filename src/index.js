@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const bootstrap = async () => {
     req.bot = bot;
     next();
   });
+
+  app.use(cors());
 
   app.use(bodyParser.json());
 

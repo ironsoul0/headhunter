@@ -6,8 +6,34 @@ const validateAdmin = require("../validators/admin");
 const Setting = require("../models/setting");
 const verify = require("../utils/verify");
 const User = require("../models/user");
+const students = require("../data/students.json");
 
 const router = express.Router();
+
+const setSetting = async set => {
+  if (!set) {
+    return {
+      success: false,
+      message: "No setting",
+    };
+  }
+  let setting = await Setting.findOne({
+    setting: set,
+  });
+  if (!setting) {
+    setting = new Setting({
+      setting: set,
+      value: true,
+    });
+  } else {
+    setting.value = !setting.value;
+  }
+  await setting.save();
+  return {
+    success: true,
+    setting: setting.value,
+  };
+};
 
 router.post("/register", async (req, res) => {
   const { error } = validateAdmin(req.body);
@@ -17,11 +43,12 @@ router.post("/register", async (req, res) => {
       message: error.details[0].message,
     });
 
-  const isDisabled = await Setting.findOne({
-    name: "admin.registration",
-  });
+  const isDisabled =
+    (await Setting.findOne({
+      setting: "adminReg",
+    })) || {};
 
-  if (!isDisabled) {
+  if (isDisabled.value) {
     return res.send({
       success: false,
       message: "Admin registration is disabled",
@@ -92,6 +119,89 @@ router.post("/login", async (req, res) => {
   });
 });
 
+router.get("/settings", verify, async (req, res) => {
+  if (!req.query.setting) {
+    return res.send({
+      success: false,
+      message: "No setting",
+    });
+  }
+  const setting = await Setting.findOne({
+    setting: req.query.setting,
+  });
+  return res.send({
+    success: true,
+    setting: setting ? setting.value : false,
+  });
+});
+
+router.post("/settings", verify, async (req, res) => {
+  if (!req.body.setting) {
+    return res.send({
+      success: false,
+      message: "No setting",
+    });
+  }
+  let setting = await Setting.findOne({
+    setting: req.body.setting,
+  });
+  if (!setting) {
+    setting = new Setting({
+      setting: req.body.setting,
+      value: true,
+    });
+  } else {
+    setting.value = !setting.value;
+  }
+  if (req.body.setting === "gameStarted") {
+    req.bot.context.gameStarted = setting.value;
+  }
+  await setting.save();
+  return res.send({
+    success: true,
+    setting: setting.value,
+  });
+});
+
+router.get("/game/start", verify, async (req, res) => {
+  if (!(await Setting.findOne({ setting: "usersShuffled" }))) {
+    return res.send({
+      success: false,
+      message: "Players are not shuffled",
+    });
+  }
+  if (req.bot.context.gameStarted) {
+    return res.send({
+      success: false,
+      message: "Already started",
+    });
+  }
+  const setting = await setSetting("gameStarted");
+  if (!setting.success) {
+    return res.send({
+      success: false,
+      message: "Error occured",
+    });
+  }
+  req.bot.context.gameStarted = true;
+  const users = await User.find({ active: true });
+  await users.forEach(async user => {
+    const target = await User.findById(user.target);
+    req.bot.telegram.sendMessage(
+      user.chatId,
+      [
+        "Game starts!",
+        "Here is your target:",
+        students[target.pid].name,
+        target.pid,
+      ].join("\n")
+    );
+  });
+  return res.send({
+    success: true,
+  });
+});
+
 router.get("/users/all", verify, async (req, res) => {
   const query = req.query.active
     ? {
@@ -102,6 +212,20 @@ router.get("/users/all", verify, async (req, res) => {
   res.send({
     success: true,
     users,
+  });
+});
+
+router.get("/users/about/:id", verify, async (req, res) => {
+  if (req.params.id) {
+    return res.send({
+      success: false,
+      message: "No id",
+    });
+  }
+  const user = await User.findById(req.params.id);
+  return res.send({
+    success: true,
+    user,
   });
 });
 
@@ -121,6 +245,7 @@ router.get("/users/shuffle", verify, async (req, res) => {
       users[i].target = users[i < users.length - 1 ? i + 1 : 0]._id;
       await users[i].save();
     });
+    await setSetting("usersShuffled");
     return res.send({
       success: true,
       users,
@@ -130,6 +255,24 @@ router.get("/users/shuffle", verify, async (req, res) => {
       success: false,
     });
   }
+});
+
+router.post("/sendMessage", verify, async (req, res) => {
+  if (!req.body.message) {
+    return res.send({
+      success: false,
+      message: "No message",
+    });
+  }
+  const users = await User.find({ active: true });
+  users.forEach(user => {
+    console.log(user);
+    req.bot.telegram.sendMessage(user.chatId, req.body.message);
+  });
+  return res.json({
+    success: true,
+    message: "Message was sent",
+  });
 });
 
 module.exports = router;

@@ -35,7 +35,11 @@ const userSchema = mongoose.Schema({
     required: true,
   },
   chatId: {
-    type: Number,
+    type: String,
+  },
+  history: {
+    type: Array,
+    default: [],
   },
   lastKill: {
     type: Date,
