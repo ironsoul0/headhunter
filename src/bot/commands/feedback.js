@@ -10,9 +10,4 @@ module.exports = bot => {
     );
     return ctx.scene.enter("askFeedback");
   });
-
-  bot.hears("◀️ Go Back", ctx => {
-    ctx.scene.leave();
-    return ctx.reply("👀", ctx.mainMenu);
-  });
 };

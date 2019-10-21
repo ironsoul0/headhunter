@@ -9,6 +9,12 @@ const messageRecieved =
 
 askFeedback.on("message", async ctx => {
   const feedback = ctx.update.message.text;
+
+  if (feedback.includes("Go Back")) {
+    ctx.scene.leave();
+    return ctx.reply("👀", ctx.mainMenu);
+  }
+
   const chatInfo = ctx.update.message.from;
   const content = [`@${chatInfo.username} has left feedback:`, feedback].join(
     "\n\n"
