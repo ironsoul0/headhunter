@@ -22,6 +22,11 @@ askSecret.on("message", async ctx => {
   if (secret === target.secret) {
     target.killed = true;
     user.target = target.target;
+    user.history.push({
+      // eslint-disable-next-line no-underscore-dangle
+      target: target._id,
+      date: new Date(),
+    });
     user.lastKill = new Date();
     user.kills += 1;
     const newTarget = await User.findById(target.target);

@@ -164,7 +164,11 @@ router.post("/settings", verify, async (req, res) => {
 });
 
 router.get("/game/start", verify, async (req, res) => {
-  if (!(await Setting.findOne({ setting: "usersShuffled" }))) {
+  if (
+    !(await Setting.findOne({
+      setting: "usersShuffled",
+    }))
+  ) {
     return res.send({
       success: false,
       message: "Players are not shuffled",
@@ -184,7 +188,9 @@ router.get("/game/start", verify, async (req, res) => {
     });
   }
   req.bot.context.gameStarted = true;
-  const users = await User.find({ active: true });
+  const users = await User.find({
+    active: true,
+  });
   await users.forEach(async user => {
     const target = await User.findById(user.target);
     req.bot.telegram.sendMessage(
@@ -216,7 +222,7 @@ router.get("/users/all", verify, async (req, res) => {
 });
 
 router.get("/users/about/:id", verify, async (req, res) => {
-  if (req.params.id) {
+  if (!req.params.id) {
     return res.send({
       success: false,
       message: "No id",
@@ -229,11 +235,66 @@ router.get("/users/about/:id", verify, async (req, res) => {
   });
 });
 
+router.get("/users/killTarget/:id", verify, async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user || !user.active || user.killed) {
+    return res.send({
+      success: false,
+      message: "Can not kill for this user",
+    });
+  }
+
+  const target = await User.findById(user.target);
+
+  target.killed = true;
+  user.target = target.target;
+  user.history.push({
+    // eslint-disable-next-line no-underscore-dangle
+    target: target._id,
+    date: new Date(),
+  });
+  user.lastKill = new Date();
+  user.kills += 1;
+
+  const newTarget = await User.findById(target.target);
+
+  await req.bot.telegram.sendMessage(
+    user.chatId,
+    [
+      "Here is your new target:",
+      students[newTarget.pid].name,
+      newTarget.pid,
+    ].join("\n")
+  );
+  await req.bot.telegram.sendMessage(
+    target.chatId,
+    ["You have been killed", `Your score: ${target.kills} kill(-s)`].join("\n")
+  );
+  await req.bot.telegram.sendMessage(
+    newTarget.chatId,
+    "Be careful new killer is coming for you"
+  );
+  await target.save();
+  await user.save();
+
+  return res.send({
+    success: true,
+  });
+});
+
 router.get("/users/shuffle", verify, async (req, res) => {
   try {
     const users = await User.find({
       active: true,
     });
+
+    if (users.length === 0) {
+      return res.send({
+        success: false,
+        message: "No active users",
+      });
+    }
 
     for (let i = users.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -245,7 +306,12 @@ router.get("/users/shuffle", verify, async (req, res) => {
       users[i].target = users[i < users.length - 1 ? i + 1 : 0]._id;
       await users[i].save();
     });
-    await setSetting("usersShuffled");
+    const shuffled = await Setting.findOne({
+      setting: "usersShuffled",
+    });
+    if (!shuffled) {
+      await setSetting("usersShuffled");
+    }
     return res.send({
       success: true,
       users,
@@ -264,11 +330,29 @@ router.post("/sendMessage", verify, async (req, res) => {
       message: "No message",
     });
   }
-  const users = await User.find({ active: true });
+  const users = await User.find({
+    active: true,
+  });
   users.forEach(user => {
     console.log(user);
     req.bot.telegram.sendMessage(user.chatId, req.body.message);
   });
+  return res.json({
+    success: true,
+    message: "Message was sent",
+  });
+});
+
+router.post("/sendMessage/:id", verify, async (req, res) => {
+  if (!req.body.message || !req.params.id) {
+    return res.send({
+      success: false,
+      message: "No message or id",
+    });
+  }
+  const user = await User.findById(req.params.id);
+  req.bot.telegram.sendMessage(user.chatId, req.body.message);
+
   return res.json({
     success: true,
     message: "Message was sent",
