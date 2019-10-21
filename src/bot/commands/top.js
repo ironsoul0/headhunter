@@ -34,7 +34,7 @@ module.exports = bot => {
       return 0;
     });
 
-    topUsers = topUsers.slice(0, 9).map((user, index) => {
+    topUsers = topUsers.slice(0, 10).map((user, index) => {
       const killDate = user.lastKill;
       const prefix = `${convert(killDate.getDate())}/${convert(
         killDate.getMonth()

@@ -1,6 +1,8 @@
 const Telegraf = require("telegraf");
 const Stage = require("telegraf/stage");
 const session = require("telegraf/session");
+const Markup = require("telegraf/markup");
+
 const Setting = require("../models/setting");
 
 const commands = require("./commands");
@@ -25,6 +27,14 @@ initSettings();
 
 bot.use(session());
 bot.use(stage.middleware());
+
+bot.context.mainMenu = Markup.keyboard([
+  ["🦍 Become a Hunter", "🔥 TOP Hunters"],
+  ["📢 Personal Info", "📞 Feedback"],
+  ["👹 Catch the Aim"],
+])
+  .resize()
+  .extra();
 
 commands.forEach(commandHandler => {
   commandHandler(bot);

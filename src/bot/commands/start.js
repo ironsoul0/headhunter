@@ -1,5 +1,3 @@
-const Markup = require("telegraf/markup");
-
 const response = [
   "Hi there!",
   "Wanna try yourself being a hunter? Use the keyboard to become one! 😈",
@@ -7,16 +5,7 @@ const response = [
 ].join("\n\n");
 
 module.exports = bot => {
-  bot.start(({ reply }) => {
-    return reply(
-      response,
-      Markup.keyboard([
-        ["🦍 Become a Hunter", "🔥 TOP Hunters"],
-        ["👁 Game Status", "👹 Catch the Aim"],
-        ["📢 Personal Info", "📞 Feedback"],
-      ])
-        .resize()
-        .extra()
-    );
+  bot.start(ctx => {
+    return ctx.reply(response, ctx.mainMenu);
   });
 };

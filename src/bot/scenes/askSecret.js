@@ -1,25 +1,27 @@
 const Scene = require("telegraf/scenes/base");
+
 const User = require("../../models/user");
 const students = require("../../data/students.json");
 
 const askSecret = new Scene("askSecret");
 
 askSecret.enter(ctx => {
-  ctx.replyWithHTML("What is the secrect phrase of your target");
+  ctx.replyWithHTML("What is the secrect phrase of your target? 🔮");
 });
 
 askSecret.on("message", async ctx => {
-  await ctx.reply("One second, sir..");
+  const chatId = ctx.update.message.from.id;
+  await ctx.telegram.sendChatAction(chatId, "typing");
 
   const secret = ctx.update.message.text;
 
   const user = await User.findOne({
-    chatId: ctx.update.message.from.id,
+    chatId,
   });
 
   const target = await User.findById(user.target);
 
-  if (secret === target.secret) {
+  if (target && secret === target.secret) {
     target.killed = true;
     user.target = target.target;
     user.history.push({
@@ -29,28 +31,34 @@ askSecret.on("message", async ctx => {
     });
     user.lastKill = new Date();
     user.kills += 1;
+
     const newTarget = await User.findById(target.target);
-    await ctx.reply(
+    await ctx.replyWithHTML(
       [
-        "Here is your new target:",
-        students[newTarget.pid].name,
-        newTarget.pid,
+        `Congratulate you with your ${user.kills} catch, hunter! 🎯`,
+        `Here is your new target: <b>${students[newTarget.pid].name}</b>\n`,
+        "Be careful 🤫",
       ].join("\n")
     );
     await ctx.telegram.sendMessage(
       target.chatId,
-      ["You have been killed", `Your score: ${target.kills} kill(-s)`].join(
-        "\n"
-      )
+      [
+        "You have been catched 😨",
+        `Your score: <b>${target.kills}</b> kill(-s)\n`,
+        "HeadHunter will never forget you 🥺",
+      ].join("\n"),
+      {
+        parse_mode: "HTML",
+      }
     );
     await ctx.telegram.sendMessage(
       newTarget.chatId,
-      "Be careful new killer is coming for you"
+      "Be careful! New hunter is coming for you 🤭"
     );
     await target.save();
     await user.save();
   } else {
-    await ctx.reply("Wrong secret phrase");
+    await ctx.reply("Wrong secret phrase, try better 🙈");
   }
 
   ctx.scene.leave();

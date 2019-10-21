@@ -17,13 +17,23 @@ const validToken = [
 const invalidToken =
   "Seems that token is invalid. Make sure you copy-pasted it from the e-mail we have sent you 🧐";
 
+const usedToken =
+  "This token is already used by someone else. Make sure you copy-pasted it from the e-mail we have sent you 🧐";
+
 askToken.on("message", async ctx => {
-  await ctx.reply("One second, sir..");
+  const chatId = ctx.update.message.from.id;
+  await ctx.telegram.sendChatAction(chatId, "typing");
 
   const token = ctx.update.message.text;
   const user = await User.findOne({
     token,
   });
+
+  if (user && user.chatId) {
+    await ctx.reply(usedToken);
+    ctx.scene.leave();
+    return;
+  }
 
   if (user) {
     ctx.reply(validToken);
@@ -31,7 +41,7 @@ askToken.on("message", async ctx => {
       { token },
       {
         active: true,
-        chatId: ctx.update.message.from.id,
+        chatId,
       }
     );
   } else {
