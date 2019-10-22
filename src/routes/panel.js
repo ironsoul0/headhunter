@@ -5,6 +5,7 @@ const Admin = require("../models/admin");
 const validateAdmin = require("../validators/admin");
 const Setting = require("../models/setting");
 const verify = require("../utils/verify");
+const killUser = require("../utils/killUser");
 const User = require("../models/user");
 const students = require("../data/students.json");
 
@@ -196,11 +197,13 @@ router.get("/game/start", verify, async (req, res) => {
     req.bot.telegram.sendMessage(
       user.chatId,
       [
-        "Game starts!",
-        "Here is your target:",
-        students[target.pid].name,
-        target.pid,
-      ].join("\n")
+        "Halloween is finally there 🎃",
+        `Your first target: <b>${students[target.pid].name}</b>\n`,
+        "May the luck be with you 😈",
+      ].join("\n"),
+      {
+        parse_mode: "HTML",
+      }
     );
   });
   return res.send({
@@ -246,37 +249,7 @@ router.get("/users/killTarget/:id", verify, async (req, res) => {
   }
 
   const target = await User.findById(user.target);
-
-  target.killed = true;
-  user.target = target.target;
-  user.history.push({
-    // eslint-disable-next-line no-underscore-dangle
-    target: target._id,
-    date: new Date(),
-  });
-  user.lastKill = new Date();
-  user.kills += 1;
-
-  const newTarget = await User.findById(target.target);
-
-  await req.bot.telegram.sendMessage(
-    user.chatId,
-    [
-      "Here is your new target:",
-      students[newTarget.pid].name,
-      newTarget.pid,
-    ].join("\n")
-  );
-  await req.bot.telegram.sendMessage(
-    target.chatId,
-    ["You have been killed", `Your score: ${target.kills} kill(-s)`].join("\n")
-  );
-  await req.bot.telegram.sendMessage(
-    newTarget.chatId,
-    "Be careful new killer is coming for you"
-  );
-  await target.save();
-  await user.save();
+  await killUser(target, user, req.bot.telegram);
 
   return res.send({
     success: true,
