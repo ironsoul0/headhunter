@@ -7,7 +7,7 @@ module.exports = bot => {
       ctx.reply("Registration is closed now 😭");
     } else {
       const chatId = ctx.update.message.from.id;
-      const existingUser = await User.find({ chatId });
+      const existingUser = await User.findOne({ chatId });
 
       if (existingUser) {
         ctx.reply("You are already a hunter 😉");
