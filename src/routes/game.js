@@ -21,6 +21,17 @@ router.post("/register", async (req, res) => {
       message: "Use NU email",
     });
   }
+
+  const secretPattern = /([A-Za-z0-9]){4,15}/;
+  const { secret } = req.body;
+  const result = secret.match(secretPattern);
+  if (!result || result[0] !== secret) {
+    return res.send({
+      success: false,
+      message: "Invalid secret",
+    });
+  }
+
   const student = students[req.body.pid];
   if (
     !student ||

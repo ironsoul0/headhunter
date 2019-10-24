@@ -192,12 +192,13 @@ router.get("/game/start", verify, async (req, res) => {
   const users = await User.find({
     active: true,
   });
+  const totalActive = users.length;
   await users.forEach(async user => {
     const target = await User.findById(user.target);
     req.bot.telegram.sendMessage(
       user.chatId,
       [
-        "Halloween is finally there 🎃",
+        `Halloween is finally there, ${totalActive} hunters joined.. 🎃`,
         `Your first target: <b>${students[target.pid].name}</b>\n`,
         "May the luck be with you 😈",
       ].join("\n"),
