@@ -31,7 +31,7 @@ module.exports = bot => {
       return ctx.scene.enter("askToken");
     }
     return ctx.reply(
-      "Visit https://uenify.com to get one and then run the command again 😉"
+      "Visit https://trytohunt.me to get one and then run the command again 😉"
     );
   });
 };

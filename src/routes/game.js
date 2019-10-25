@@ -67,7 +67,7 @@ router.post("/register", async (req, res) => {
         <body>
           <h1>You have successfully registered</h1>
           <p>Here is your token: <b>${token}</b></p>
-          <p>Use it to login into our <a href="https://t.me/bot">Telegram bot</a></p>
+          <p>Use it to login into our <a href="https://t.me/nu_headhunter_bot">Telegram bot</a></p>
         </body>
       </html>
     `,

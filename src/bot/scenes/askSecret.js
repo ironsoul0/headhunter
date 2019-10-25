@@ -21,7 +21,7 @@ askSecret.on("message", async ctx => {
 
   const target = await User.findById(user.target);
 
-  if (target && secret === target.secret) {
+  if (target && secret.toLowerCase() === target.secret.toLowerCase()) {
     await killUser(target, user, ctx.telegram);
   } else {
     await ctx.reply("Wrong secret phrase, try better 🙈");
