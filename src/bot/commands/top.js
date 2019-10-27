@@ -47,7 +47,7 @@ module.exports = bot => {
       const { kills } = user;
       const lastKill = `${prefix} at ${suffix}`;
 
-      return `${index + 1}. ${name} - <b>${kills}</b> kills - ${lastKill}`;
+      return `${index + 1}. ${name} - <b>${kills}</b> kill(-s) - ${lastKill}`;
     });
 
     if (topUsers.length === 0) {
