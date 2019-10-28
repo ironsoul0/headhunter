@@ -333,4 +333,31 @@ router.post("/sendMessage/:id", verify, async (req, res) => {
   });
 });
 
+router.post("/killByTime", verify, async (req, res) => {
+  if (!req.body.timestamp) {
+    return res.send({
+      success: false,
+      message: "No timestamp",
+    });
+  }
+  const users = await User.find({
+    active: true,
+    killed: false,
+    lastKill: {
+      $lt: req.body.timestamp,
+    },
+  });
+  users.forEach(async target => {
+    const user = await User.findOne({
+      // eslint-disable-next-line no-underscore-dangle
+      target: target._id,
+    });
+    killUser(target, user, req.bot);
+  });
+  return res.send({
+    success: true,
+    message: "Killed",
+  });
+});
+
 module.exports = router;
