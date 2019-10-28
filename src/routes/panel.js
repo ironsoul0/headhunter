@@ -340,6 +340,16 @@ router.post("/killByTime", verify, async (req, res) => {
       message: "No timestamp",
     });
   }
+  if (
+    !(await Setting.findOne({
+      setting: "usersShuffled",
+    }))
+  ) {
+    return res.send({
+      success: false,
+      message: "Players are not shuffled",
+    });
+  }
   const users = await User.find({
     active: true,
     killed: false,

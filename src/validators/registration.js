@@ -7,6 +7,7 @@ const validateRegistration = data => {
       .required(),
     secret: Joi.string()
       .min(4)
+      .max(15)
       .required(),
     pid: Joi.number()
       .min(9)
