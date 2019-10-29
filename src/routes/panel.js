@@ -8,6 +8,7 @@ const verify = require("../utils/verify");
 const killUser = require("../utils/killUser");
 const User = require("../models/user");
 const students = require("../data/students.json");
+const sendEmail = require("../utils/mailer");
 
 const router = express.Router();
 
@@ -367,6 +368,36 @@ router.post("/killByTime", verify, async (req, res) => {
   return res.send({
     success: true,
     message: "Killed",
+  });
+});
+
+router.get("/notifyInactive", verify, async (_, res) => {
+  const users = await User.find({
+    active: false,
+  });
+
+  users.forEach(async user => {
+    try {
+      await sendEmail(
+        `
+          <html>
+            <body>
+              <h1>You did not complete the registration!</h1>
+              <p>As a final step, you have to use your token to login into our <a href="https://t.me/nu_headhunter_bot">Telegram bot</a></p>
+              <p>Here is your token: <b>${user.token}</b></p>
+            </body>
+          </html>
+        `,
+        "HeadHunter Incomplete Registration",
+        user.email
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  return res.send({
+    success: true,
   });
 });
 
