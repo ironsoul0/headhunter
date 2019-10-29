@@ -358,13 +358,16 @@ router.post("/killByTime", verify, async (req, res) => {
       $lt: req.body.timestamp,
     },
   });
-  users.forEach(async target => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const target of users) {
+    // eslint-disable-next-line no-await-in-loop
     const user = await User.findOne({
       // eslint-disable-next-line no-underscore-dangle
       target: target._id,
     });
-    killUser(target, user, req.bot);
-  });
+    // eslint-disable-next-line no-await-in-loop
+    await killUser(target, user, req.bot);
+  }
   return res.send({
     success: true,
     message: "Killed",
