@@ -13,6 +13,11 @@ askFeedback.on("message", async ctx => {
   const chatId = ctx.update.message.from.id;
   const chatInfo = ctx.update.message.from;
 
+  if (feedback.includes("Go Back")) {
+    ctx.scene.leave();
+    return ctx.reply("👀", ctx.mainMenu);
+  }
+
   const user = await User.findOne({
     chatId,
   });
@@ -25,7 +30,7 @@ askFeedback.on("message", async ctx => {
     "New feeadback ✌️\n",
     `Student ID: <b>${pid || "No ID"}</b>`,
     `Email: <b>${email || "No Email"}</b>`,
-    `Telegram: @${username || "Hidden"}\n`,
+    `Telegram: ${username ? `@${username}` : "Hidden"}\n`,
     feedback,
   ].join("\n");
 
