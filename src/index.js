@@ -19,6 +19,8 @@ const bootstrap = async () => {
 
   app.use(cors());
 
+  app.use(express.static("public"));
+
   app.use(bodyParser.json());
 
   routes.forEach(route => {
