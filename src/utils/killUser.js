@@ -3,6 +3,8 @@
 const User = require("../models/user");
 const students = require("../data/students.json");
 
+const adminsList = [317786640, 671848828];
+
 const phrases = [
   "{1} was catched by {2} 👺",
   "Bad luck for {1} and +1 catch for {2} 🔥",
@@ -66,6 +68,12 @@ module.exports = async (target, user, bot, byTime) => {
     users.forEach(el => {
       // eslint-disable-next-line no-underscore-dangle
       bot.sendMessage(el.chatId, message, {
+        parse_mode: "HTML",
+      });
+    });
+
+    adminsList.forEach(adminId => {
+      bot.sendMessage(adminId, message, {
         parse_mode: "HTML",
       });
     });
