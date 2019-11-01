@@ -11,18 +11,8 @@ const notRegistered = [
   "Use the bot keyboard to become one 😈",
 ].join("\n\n");
 
-const hideSecret = secret => {
-  const { length } = secret;
-  let suffix = "";
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < length - 2; i++) {
-    suffix += "*";
-  }
-  return secret.substr(0, 2) + suffix;
-};
-
 const getAlive = async () => {
-  let count = await User.count({active: true, killed: false });
+  const count = await User.count({ active: true, killed: false });
   return count;
 };
 
