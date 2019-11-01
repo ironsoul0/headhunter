@@ -22,9 +22,8 @@ const hideSecret = secret => {
 };
 
 const getAlive = async () => {
-  let users = await User.find();
-  users = users.filter(user => !user.killed);
-  return users.length;
+  let count = await User.count({active: true, killed: false });
+  return count;
 };
 
 module.exports = bot => {
@@ -53,7 +52,7 @@ module.exports = bot => {
       "Here is some information you should know 🧠\n",
       `My target: <b>${targetName}</b>`,
       `My score: <b>${kills} catches</b>`,
-      `My secret: <b>${hideSecret(secret)}</b>`,
+      `My secret: <b>${secret}</b>`,
       `Am I alive: <b>${killed ? "No" : "Yes"}</b>`,
       `Hunters still alive: <b>${aliveHunters}</b>`,
     ].join("\n");

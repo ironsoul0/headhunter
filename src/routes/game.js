@@ -8,6 +8,14 @@ const sendEmail = require("../utils/mailer");
 
 const router = express.Router();
 
+router.get("/playersAlive", async (req, res) => {
+  const count = await User.count({active: true, killed: false})
+  res.send({
+    success: true,
+    count
+  })
+})
+
 router.post("/register", async (req, res) => {
   const { error } = validateRegistration(req.body);
   if (error)

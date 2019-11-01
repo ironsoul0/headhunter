@@ -366,7 +366,7 @@ router.post("/killByTime", verify, async (req, res) => {
       target: target._id,
     });
     // eslint-disable-next-line no-await-in-loop
-    await killUser(target, user, req.bot);
+    await killUser(target, user, req.bot, true);
   }
   return res.send({
     success: true,
