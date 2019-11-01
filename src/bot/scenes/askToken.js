@@ -39,17 +39,19 @@ askToken.on("message", async ctx => {
 
     if (user) {
       ctx.reply(validToken);
-      await User.findOneAndUpdate({
-        token
-      }, {
-        active: true,
-        chatId,
-      });
+      await User.findOneAndUpdate(
+        {
+          token,
+        },
+        {
+          active: true,
+          chatId,
+        }
+      );
     } else {
       await ctx.reply(invalidToken);
     }
   }
-
 
   ctx.scene.leave();
 });

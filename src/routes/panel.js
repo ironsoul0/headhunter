@@ -358,6 +358,10 @@ router.post("/killByTime", verify, async (req, res) => {
       $lt: req.body.timestamp,
     },
   });
+
+  const becomeDead = new Set();
+  const targetChanged = new Set();
+
   // eslint-disable-next-line no-restricted-syntax
   for (const target of users) {
     // eslint-disable-next-line no-await-in-loop
@@ -367,7 +371,31 @@ router.post("/killByTime", verify, async (req, res) => {
     });
     // eslint-disable-next-line no-await-in-loop
     await killUser(target, user, req.bot, true);
+    becomeDead.add(target.chatId);
+    targetChanged.add(user.chatId);
   }
+
+  becomeDead.forEach(dead => {
+    targetChanged.delete(dead);
+    const message = "You were deactivated because of inactivity 😭";
+    req.bot.telegram.sendMessage(dead, message);
+  });
+
+  targetChanged.forEach(async chatId => {
+    const info = await User.findOne({ chatId });
+    const newTarget = await User.findById(info.target);
+
+    req.bot.telegram.sendMessage(
+      chatId,
+      [
+        `Your previous target was deactivated because of inactivity 😣`,
+        `Here is your new target: <b>${students[newTarget.pid].name}</b>\n`,
+        "Good luck 🤞",
+      ].join("\n"),
+      { parse_mode: "HTML" }
+    );
+  });
+
   return res.send({
     success: true,
     message: "Killed",
