@@ -2,8 +2,7 @@
 
 const User = require("../models/user");
 const students = require("../data/students.json");
-
-const adminsList = [317786640, 671848828];
+const notifyAdmins = require("../utils/notifyAdmins");
 
 const phrases = [
   "{1} was catched by {2} 👺",
@@ -72,16 +71,7 @@ module.exports = async (target, user, bot, byTime) => {
       });
     });
 
-    adminsList.forEach(adminId => {
-      bot.sendMessage(adminId, message, {
-        parse_mode: "HTML",
-      });
-    });
-
-    /* bot.sendMessage(
-      newTarget.chatId,
-      "Be careful! New hunter is coming for you 🤭"
-    ); */
+    notifyAdmins(message, bot);
   }
   await target.save();
   await user.save();

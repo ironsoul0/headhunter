@@ -8,6 +8,7 @@ dotenv.config();
 
 const routes = require("./routes");
 const bot = require("./bot");
+const notifyAdmins = require("../src/utils/notifyAdmins");
 
 const bootstrap = async () => {
   const app = express();
@@ -40,6 +41,7 @@ const bootstrap = async () => {
 
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
+    notifyAdmins("New backend is released! 🥳", bot.telegram);
   });
 };
 

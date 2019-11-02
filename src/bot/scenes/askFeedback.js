@@ -1,7 +1,6 @@
 const Scene = require("telegraf/scenes/base");
 const User = require("../../models/user");
-
-const adminsList = [317786640, 671848828];
+const notifyAdmins = require("../../utils/notifyAdmins");
 
 const askFeedback = new Scene("askFeedback");
 
@@ -34,11 +33,7 @@ askFeedback.on("message", async ctx => {
     feedback,
   ].join("\n");
 
-  adminsList.forEach(adminId => {
-    ctx.telegram.sendMessage(adminId, content, {
-      parse_mode: "HTML",
-    });
-  });
+  notifyAdmins(content, ctx.telegram);
 
   ctx.scene.leave();
   return ctx.reply(messageRecieved, ctx.mainMenu);
