@@ -9,7 +9,7 @@ const notRegistered =
   "Seems you did not register for the game. You are unfortunately not allowed to enter the game now 😭";
 
 const wasKilled =
-  "You were catched by one of the hunters. You are unfortunately not allowed to catch anyone now 😭";
+  "You were caught by one of the hunters. You are unfortunately not allowed to catch anyone now 😭";
 
 module.exports = bot => {
   bot.hears("👹 Catch the Aim", async ctx => {

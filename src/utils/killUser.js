@@ -5,7 +5,7 @@ const students = require("../data/students.json");
 const notifyAdmins = require("../utils/notifyAdmins");
 
 const phrases = [
-  "{1} was catched by {2} 👺",
+  "{1} was caught by {2} 👺",
   "Bad luck for {1} and +1 catch for {2} 🔥",
   "{2} stops the game for {1} in this round 😈",
 ];
@@ -50,7 +50,7 @@ module.exports = async (target, user, bot, byTime) => {
     bot.sendMessage(
       target.chatId,
       [
-        "You have been catched 😨",
+        "You have been caught 😨",
         `Your score: <b>${target.kills}</b> kill(-s)\n`,
         "HeadHunter will never forget you 🥺",
       ].join("\n"),

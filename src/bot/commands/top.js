@@ -35,7 +35,7 @@ module.exports = bot => {
     });
 
     topUsers = topUsers.slice(0, 10).map((user, index) => {
-      const killDate = new Date((user.lastKill.getTime()) + (360 * 60 * 1000));
+      const killDate = new Date(user.lastKill.getTime() + 360 * 60 * 1000);
       const prefix = `${convert(killDate.getDate())}/${convert(
         killDate.getMonth()
       )}`;
