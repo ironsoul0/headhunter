@@ -8,6 +8,10 @@ const phrases = [
   "{1} was caught by {2} 👺",
   "Bad luck for {1} and +1 catch for {2} 🔥",
   "{2} stops the game for {1} in this round 😈",
+  "{2} increases domination after catching {1} 💀",
+  "{2} is the last one who heard screams of {1} 🤭",
+  "{1} will never forget meeting with {2} 🥺",
+  "After the trip to {1}, {2} is now probably coming for you.. 🤫",
 ];
 
 const generatePhrase = (victim, killer) => {
