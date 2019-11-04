@@ -12,7 +12,7 @@ askFeedback.on("message", async ctx => {
   const chatId = ctx.update.message.from.id;
   const chatInfo = ctx.update.message.from;
 
-  if (feedback.includes("Go Back")) {
+  if (feedback.includes("◀️ Go Back")) {
     ctx.scene.leave();
     return ctx.reply("👀", ctx.mainMenu);
   }
