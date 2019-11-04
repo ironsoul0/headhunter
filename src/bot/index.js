@@ -31,6 +31,7 @@ bot.use(stage.middleware());
 bot.context.mainMenu = Markup.keyboard([
   ["🦍 Become a Hunter", "🔥 TOP Hunters"],
   ["📢 Personal Info", "📞 Feedback"],
+  ["🤳 Message the Aim", "👁 Message the Hunter"],
   ["👹 Catch the Aim"],
 ])
   .resize()

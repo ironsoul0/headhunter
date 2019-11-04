@@ -26,12 +26,13 @@ module.exports = bot => {
     }
   });
 
-  bot.action(/.+/, ctx => {
-    if (ctx.match[0] === "Token") {
-      return ctx.scene.enter("askToken");
-    }
-    return ctx.reply(
+  bot.action("No token", ctx => {
+    ctx.reply(
       "Visit https://trytohunt.me to get one and then run the command again 😉"
     );
+  });
+
+  bot.action("Token", ctx => {
+    ctx.scene.enter("askToken");
   });
 };
