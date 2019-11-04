@@ -310,7 +310,11 @@ router.post("/sendMessage", verify, async (req, res) => {
   });
   users.forEach(user => {
     console.log(user);
-    req.bot.telegram.sendMessage(user.chatId, req.body.message);
+    req.bot.telegram.sendMessage(
+      user.chatId,
+      req.body.message,
+      req.bot.context.mainMenu
+    );
   });
   return res.json({
     success: true,
