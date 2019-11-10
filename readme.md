@@ -15,7 +15,7 @@
   </p>
 </p>
 
-## Instalation
+## Installation
 
 ```sh
 git clone https://github.com/ironsoul0/headhunter.git
@@ -28,7 +28,7 @@ npm start
 
 Before you start:
 
-1. Create .env file with all needed enviromental variables:
+1. Create .env file with all needed environmental variables:
     - `BOT_TOKEN` - Your Telegram bot token
     - `SMTP_LOGIN` - SMTP Login
     - `SMTP_PASSWORD` - SMTP Password
