@@ -30,7 +30,7 @@
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.7.4",
+    "mongoose": "^5.7.5",
     "nodemailer": "^6.3.1",
     "telegraf": "^3.32.0",
     "uuidv4": "^5.0.1"
