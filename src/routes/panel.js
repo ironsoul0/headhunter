@@ -338,11 +338,17 @@ router.post("/sendMessage/:id", verify, async (req, res) => {
   });
 });
 
-router.post("/killByTime", verify, async (req, res) => {
-  if (!req.body.timestamp) {
+router.post("/killByKills", verify, async (req, res) => {
+  if (!req.body.number) {
     return res.send({
       success: false,
-      message: "No timestamp",
+      message: "No number",
+    });
+  }
+  if (!Number(req.body.number)) {
+    return res.send({
+      success: false,
+      message: "NaN",
     });
   }
   if (
@@ -355,11 +361,12 @@ router.post("/killByTime", verify, async (req, res) => {
       message: "Players are not shuffled",
     });
   }
+  req.bot.context.killing = true;
   const users = await User.find({
     active: true,
     killed: false,
-    lastKill: {
-      $lt: req.body.timestamp,
+    kills: {
+      $lt: req.body.number,
     },
   });
 
@@ -386,7 +393,9 @@ router.post("/killByTime", verify, async (req, res) => {
   });
 
   targetChanged.forEach(async chatId => {
-    const info = await User.findOne({ chatId });
+    const info = await User.findOne({
+      chatId,
+    });
     const newTarget = await User.findById(info.target);
 
     req.bot.telegram.sendMessage(
@@ -396,10 +405,12 @@ router.post("/killByTime", verify, async (req, res) => {
         `Here is your new target: <b>${students[newTarget.pid].name}</b>\n`,
         "Good luck 🤞",
       ].join("\n"),
-      { parse_mode: "HTML" }
+      {
+        parse_mode: "HTML",
+      }
     );
   });
-
+  req.bot.context.killing = false;
   return res.send({
     success: true,
     message: "Killed",
