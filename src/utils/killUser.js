@@ -40,28 +40,38 @@ module.exports = async (target, user, bot, byTime) => {
     });
 
     const newTarget = await User.findById(target.target);
-    bot.sendMessage(
-      user.chatId,
-      [
-        `Congratulate you with your ${user.kills} catch, hunter! 🎯`,
-        `Here is your new target: <b>${students[newTarget.pid].name}</b>\n`,
-        "Be careful 🤫",
-      ].join("\n"),
-      {
-        parse_mode: "HTML",
-      }
-    );
-    bot.sendMessage(
-      target.chatId,
-      [
-        "You have been caught 😨",
-        `Your score: <b>${target.kills}</b> kill(-s)\n`,
-        "HeadHunter will never forget you 🥺",
-      ].join("\n"),
-      {
-        parse_mode: "HTML",
-      }
-    );
+
+    try {
+      bot.sendMessage(
+        user.chatId,
+        [
+          `Congratulate you with your ${user.kills} catch, hunter! 🎯`,
+          `Here is your new target: <b>${students[newTarget.pid].name}</b>\n`,
+          "Be careful 🤫",
+        ].join("\n"),
+        {
+          parse_mode: "HTML",
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+
+    try {
+      bot.sendMessage(
+        target.chatId,
+        [
+          "You have been caught 😨",
+          `Your score: <b>${target.kills}</b> kill(-s)\n`,
+          "HeadHunter will never forget you 🥺",
+        ].join("\n"),
+        {
+          parse_mode: "HTML",
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
 
     const message = generatePhrase(
       students[target.pid].name,
@@ -70,9 +80,13 @@ module.exports = async (target, user, bot, byTime) => {
 
     users.forEach(el => {
       // eslint-disable-next-line no-underscore-dangle
-      bot.sendMessage(el.chatId, message, {
-        parse_mode: "HTML",
-      });
+      try {
+        bot.sendMessage(el.chatId, message, {
+          parse_mode: "HTML",
+        });
+      } catch (err) {
+        console.log(err);
+      }
     });
 
     notifyAdmins(message, bot);

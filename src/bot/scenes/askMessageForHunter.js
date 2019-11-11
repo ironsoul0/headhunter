@@ -33,6 +33,7 @@ askMessageForHunter.on("message", async ctx => {
   const hunter = await User.findOne({
     // eslint-disable-next-line no-underscore-dangle
     target: user._id,
+    killed: false,
   });
 
   const content = [
@@ -40,13 +41,17 @@ askMessageForHunter.on("message", async ctx => {
     `<b>${message}</b>`,
   ].join("\n\n");
 
-  ctx.telegram.sendMessage(
-    hunter.chatId,
-    content,
-    Extra.HTML().markup(m =>
-      m.inlineKeyboard([m.callbackButton("Reply 🤫", "Reply to Aim")])
-    )
-  );
+  try {
+    ctx.telegram.sendMessage(
+      hunter.chatId,
+      content,
+      Extra.HTML().markup(m =>
+        m.inlineKeyboard([m.callbackButton("Reply 🤫", "Reply to Aim")])
+      )
+    );
+  } catch (err) {
+    console.log(err);
+  }
 
   ctx.scene.leave();
   return ctx.reply(messageRecieved, ctx.mainMenu);

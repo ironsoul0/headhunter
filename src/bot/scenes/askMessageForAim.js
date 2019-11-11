@@ -36,13 +36,17 @@ askMessageForAim.on("message", async ctx => {
     `<b>${message}</b>`,
   ].join("\n\n");
 
-  ctx.telegram.sendMessage(
-    target.chatId,
-    content,
-    Extra.HTML().markup(m =>
-      m.inlineKeyboard([m.callbackButton("Reply 🤫", "Reply to Hunter")])
-    )
-  );
+  try {
+    ctx.telegram.sendMessage(
+      target.chatId,
+      content,
+      Extra.HTML().markup(m =>
+        m.inlineKeyboard([m.callbackButton("Reply 🤫", "Reply to Hunter")])
+      )
+    );
+  } catch (err) {
+    console.log(err);
+  }
 
   ctx.scene.leave();
   return ctx.reply(messageRecieved, ctx.mainMenu);
