@@ -6,7 +6,7 @@ const killUser = require("../../utils/killUser");
 const askSecret = new Scene("askSecret");
 
 askSecret.enter(ctx => {
-  ctx.replyWithHTML("What is the secrect phrase of your target? 🔮");
+  ctx.replyWithHTML("What is the secret phrase of your target? 🔮");
 });
 
 askSecret.on("message", async ctx => {

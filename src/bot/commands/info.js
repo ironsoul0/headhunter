@@ -35,7 +35,7 @@ module.exports = bot => {
 
     const { target: targetId, kills, secret, killed } = user;
     const target = await User.findById(targetId);
-    const targetName = students[target.pid].name;
+    const targetName = !killed ? students[target.pid].name : "No target";
     const aliveHunters = await getAlive();
 
     const info = [
