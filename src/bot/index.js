@@ -28,11 +28,7 @@ const bootstrap = async () => {
     });
     const gameEnded = initiallyEnded ? initiallyEnded.value : false;
     console.log(`Setting loaded: gameEnded == ${gameEnded}`);
-    if (gameEnded) {
-      bot.use(async ctx => {
-        ctx.reply("The game has officially ended, stay tuned for updates 😋");
-      });
-    }
+    bot.context.gameEnded = gameEnded;
   };
 
   await initSettings();

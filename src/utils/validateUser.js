@@ -11,7 +11,13 @@ const notRegistered =
 const wasKilled =
   "You were caught by one of the hunters. You are unfortunately not allowed to take participation now 😭";
 
+const gameEnded = "The game has officially ended, stay tuned for updates 😋";
+
 module.exports = async (ctx, callback) => {
+  if (ctx.gameEnded) {
+    return ctx.reply(gameEnded);
+  }
+
   if (!ctx.gameStarted) {
     return ctx.reply(gameNotStarted);
   }
