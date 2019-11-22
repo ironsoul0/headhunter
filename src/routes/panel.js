@@ -213,6 +213,25 @@ router.get("/game/start", verify, async (req, res) => {
   });
 });
 
+router.get("/game/stop", verify, async (req, res) => {
+  if (!req.bot.context.gameStarted) {
+    return res.send({
+      success: false,
+      message: "Game is not started",
+    });
+  }
+  const setting = await setSetting("gameEnded");
+  if (!setting.success) {
+    return res.send({
+      success: false,
+      message: "Error occured",
+    });
+  }
+  return res.send({
+    success: true,
+  });
+});
+
 router.get("/users/all", verify, async (req, res) => {
   const query = req.query.active
     ? {
