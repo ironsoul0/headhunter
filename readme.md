@@ -9,9 +9,9 @@
     Server and bot code for annual HeadHunter event 🎃
     <br />
     <br />
-    <a href="https://t.me/nu_headhunter_bot">Try the bot</a>
+<!--     <a href="https://t.me/nu_headhunter_bot">Try the bot</a>
     ·
-    <a href="https://trytohunt.me/">Visit the website</a>
+    <a href="https://trytohunt.me/">Visit the website</a> -->
   </p>
 </p>
 
