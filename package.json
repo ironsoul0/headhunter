@@ -31,7 +31,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.4",
-    "nodemailer": "^6.3.1",
+    "nodemailer": "^6.4.16",
     "telegraf": "^3.32.0",
     "uuidv4": "^5.0.1"
   }
